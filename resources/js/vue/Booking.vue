@@ -1,9 +1,103 @@
 <template>
-    <div>booking</div>
+    <Navbar />
+    <div class="container">
+    <h1>Booking Form</h1>
+    <form id="bookingForm" class="booking-form">
+        <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+        <label for="phoneNumber">Phone Number:</label>
+        <input type="tel" id="phoneNumber" name="phoneNumber" required>
+        </div>
+        <div class="form-group">
+        <label for="notes">Notes:</label>
+        <textarea id="notes" name="notes" rows="4"></textarea>
+        </div>
+        <div class="form-group">
+        <label for="checkinDate">Check-in Date:</label>
+        <input type="date" id="checkinDate" name="checkinDate" required>
+        </div>
+        <div class="form-group">
+        <label for="checkoutDate">Check-out Date:</label>
+        <input type="date" id="checkoutDate" name="checkoutDate" required>
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+</div>
+    <Footer />
 </template>
 
-<script>
-    export default{
+<style scoped>
+    .container {
+  width: 80%;
+  margin: 20px auto;
+  height: 75.4vh;
+}
 
+h1 {
+  text-align: center;
+}
+
+.booking-form {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+textarea,
+input[type="date"],
+button {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+button {
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+/* Responsive styling */
+@media screen and (max-width: 600px) {
+  .container {
+    width: 100%;
+    padding: 0 10px;
+  }
+}
+</style>
+<script>
+import Navbar from './Navbar.vue';
+import Footer from './Footer.vue';
+    export default{
+        components:{
+            Navbar,
+            Footer,
+        }
     }
 </script>

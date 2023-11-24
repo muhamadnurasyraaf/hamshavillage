@@ -10,11 +10,24 @@
         <router-link class="nav-link" to="/terms">Terms & Condition</router-link>
     </div>
     <div>
-      <button id="btn">Contact Us</button>
+      <button @click="navigate" id="btn">Contact Us</button>
     </div>
    </nav>
 </template>
-
+<script>
+    export default{
+        methods:{
+            navigate(){
+                this.$router.push({ name: 'contact'});
+            }
+        },
+        data() {
+            return {
+                active:true,
+            }
+        },
+    }
+</script>
 <style scoped>
     nav{
   display: flex;

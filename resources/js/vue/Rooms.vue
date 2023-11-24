@@ -127,6 +127,7 @@ button:hover{
         data(){
             return {
                 showBackgroundImage:true,
+                active:'rooms',
             }
         },
         created(){
