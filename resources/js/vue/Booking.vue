@@ -2,37 +2,36 @@
     <Navbar />
     <div class="container">
     <h1>Booking Form</h1>
-    <form id="bookingForm" class="booking-form">
+    <form id="bookingForm" class="booking-form" @submit.prevent="submitForm">
         <div class="form-group">
         <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required>
+        <input type="text" id="name" v-model="formData.name" required>
         </div>
         <div class="form-group">
         <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
+        <input type="email" id="email" v-model="formData.email" required>
         </div>
         <div class="form-group">
         <label for="phoneNumber">Phone Number:</label>
-        <input type="tel" id="phoneNumber" name="phoneNumber" required>
+        <input type="tel" id="phoneNumber" v-model="formData.phonenumber" required>
         </div>
-        <div class="form-gro">
+        <div class="form-group">
             <label for="Room_Choice">Room Choice</label>
-            <select id="Room_Choice">
-                <option value="1">Family Chalet</option>
-                <option value="2">Single Chalet</option>
+            <select id="Room_Choice" v-model="selectedRoom">
+                <option v-for="room in rooms" :key="room.id" :value="room.id">{{ room.room_name }}</option>
             </select>
         </div>
         <div class="form-group">
         <label for="notes">Notes:</label>
-        <textarea id="notes" name="notes" rows="4"></textarea>
+        <textarea id="notes" v-model="formData.notes" rows="4"></textarea>
         </div>
         <div class="form-group">
         <label for="checkinDate">Check-in Date:</label>
-        <input type="date" id="checkinDate" name="checkinDate" required>
+        <input type="date" id="checkinDate" v-model="formData.checkin_date" required>
         </div>
         <div class="form-group">
         <label for="checkoutDate">Check-out Date:</label>
-        <input type="date" id="checkoutDate" name="checkoutDate" required>
+        <input type="date" id="checkoutDate" v-model="formData.checkout_date" required>
         </div>
         <button type="submit">Submit</button>
     </form>
@@ -101,7 +100,47 @@ button:hover {
 <script>
 import Navbar from './Navbar.vue';
 import Footer from './Footer.vue';
+import axios from 'axios';
     export default{
+        data(){
+            return {
+                rooms:[],
+                selectedRoom:null,
+                formData:{
+                    name: '',
+                    email: '',
+                    phonenumber: '',
+                    room_id: '',
+                    notes: '',
+                    checkin_date:'',
+                    checkout_date:'',
+                    paid:false,
+                },
+            }
+        },
+        mounted(){
+            axios.get('/api/rooms')
+            .then((response) => {
+                this.rooms = response.data;
+                this.$router({ name:'payment', params: {id:response.data.id}});
+            }).catch((err) => {
+                console.error('Error fetching room data : ',err);
+            });
+
+        },
+        methods:{
+            submitForm(){
+                this.formData.room_id = this.selectedRoom;
+
+                axios.post('/api/booking/store',this.formData)
+                .then((response) => {
+                    console.log('Form submitted succesfully : ' , response.data);
+                })
+                .catch((error) =>{
+                    console.log('Error submitting form: ',error);
+                });
+            },
+        },
         components:{
             Navbar,
             Footer,

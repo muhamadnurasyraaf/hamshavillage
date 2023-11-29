@@ -26,26 +26,41 @@ class BookingController extends Controller
             'notes' => 'This is a sample booking.',
             'checkin_date' => '2023-12-01',
             'checkout_date' => '2023-12-05',
-            // Assuming 'created_at' and 'updated_at' are managed by Eloquent timestamps
         ]);
-        return $data;
+        return response()->json($data);
     }
     public function store(Request $request)
     {
-        try{
+        try {
             $validatedData = $request->validate([
+                'room_id' => 'required',
                 'name' => 'required|string|min:5|max:30',
-                'email' => 'required|email|',
+                'email' => 'required|email',
                 'phonenumber' => 'required',
                 'notes' => 'max:200|nullable',
                 'checkin_date' => 'required|date',
                 'checkout_date' => 'required|date',
+                'paid' => 'boolean',
             ]);
 
             $booking = Booking::create($validatedData);
-            return $booking;
-        }catch(ValidationException $e){
-            return $e;
+
+            // Return a success response
+            return response()->json([
+                'message' => 'Booking created successfully',
+                'data' => $booking,
+            ]);
+        } catch (ValidationException $e) {
+            // Handle the validation exception here
+            return response()->json([
+                'message' => 'Validation error',
+                'errors' => $e->errors(),
+            ], 422); // 422 status code represents Unprocessable Entity (validation errors)
+        } catch (\Exception $e) {
+            // Handle other exceptions here
+            return response()->json([
+                'message' => 'Something went wrong' . $e,
+            ], 500); // 500 status code represents Internal Server Error
         }
 
 

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text('notes')->nullable();
             $table->date('checkin_date');
             $table->date('checkout_date');
+            $table->boolean('paid')->default(false);
             $table->timestamps();
         });
     }

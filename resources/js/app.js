@@ -11,6 +11,7 @@ import BookingHistory from './vue/admin/BookingHistory.vue';
 import AdminLoginForm from './vue/admin/AdminLoginForm.vue';
 import BookingDetails from './vue/admin/BookingDetails.vue';
 import Contact from './vue/Contact.vue';
+import Payment from './vue/Payment.vue';
 import { createRouter,createWebHistory } from 'vue-router';
 const routes = [
     { path: '/' , component: App },
@@ -22,7 +23,8 @@ const routes = [
     { path: '/admin/ongoingbooking' , component:OngoingBooking },
     { path: '/admin/bookinghistory' , component:BookingHistory },
     { path: '/contact' , component:Contact , name:'contact' },
-    { path: '/booking-details/:id', component:BookingDetails, name:'booking-details' }
+    { path: '/booking-details/:id', component:BookingDetails, name:'booking-details' },
+    { path: '/payment/:id' , component:Payment , name:'payment' }
 ]
 
 const router = createRouter({
