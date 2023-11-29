@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
@@ -19,7 +21,14 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        $user = User::create([
+            'username' => 'asyraaf',
+            'email' => 'masyraaf14@gmail.com',
+            'is_admin' => true,
+            'email_verified_at' => now(), // Assuming email is verified at the time of creation
+            'password' => bcrypt('PythonisSucks98@#'), // Change 'password' to the desired password for the admin user
+        ]);
+        return $user;
     }
 
     /**
@@ -27,7 +36,19 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try{
+            $validatedData = $request->validate([
+                'username' => 'required|string|min:4|max:20',
+                'email' => 'required|email|',
+                'password' => 'string|min:7|max:25',
+            ]);
+            $validatedData['password'] = bcrypt($request->password);
+            User::create($validatedData);
+            return $validatedData;
+        }catch(ValidationException $e){
+            return $e;
+        }
+
     }
 
     /**

@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('rooms', function (Blueprint $table) {
             $table->id();
             $table->string('room_name');
-            $table->string('imageUrl');
+            $table->string('imageUrl')->nullable();
             $table->text('description');
+            $table->float('price');
             $table->boolean('isBooked')->default(false);
             $table->timestamps();
         });

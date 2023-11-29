@@ -9,6 +9,7 @@ import Dashboard from './vue/admin/Dashboard.vue';
 import OngoingBooking from './vue/admin/OngoingBooking.vue';
 import BookingHistory from './vue/admin/BookingHistory.vue';
 import AdminLoginForm from './vue/admin/AdminLoginForm.vue';
+import BookingDetails from './vue/admin/BookingDetails.vue';
 import Contact from './vue/Contact.vue';
 import { createRouter,createWebHistory } from 'vue-router';
 const routes = [
@@ -21,6 +22,7 @@ const routes = [
     { path: '/admin/ongoingbooking' , component:OngoingBooking },
     { path: '/admin/bookinghistory' , component:BookingHistory },
     { path: '/contact' , component:Contact , name:'contact' },
+    { path: '/booking-details/:id', component:BookingDetails, name:'booking-details' }
 ]
 
 const router = createRouter({

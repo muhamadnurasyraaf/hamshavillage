@@ -15,6 +15,13 @@
         <label for="phoneNumber">Phone Number:</label>
         <input type="tel" id="phoneNumber" name="phoneNumber" required>
         </div>
+        <div class="form-gro">
+            <label for="Room_Choice">Room Choice</label>
+            <select id="Room_Choice">
+                <option value="1">Family Chalet</option>
+                <option value="2">Single Chalet</option>
+            </select>
+        </div>
         <div class="form-group">
         <label for="notes">Notes:</label>
         <textarea id="notes" name="notes" rows="4"></textarea>

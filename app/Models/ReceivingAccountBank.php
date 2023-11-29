@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class ReceivingAccountBank extends Model
 {
     use HasFactory;
+
+    protected $guarded = ['id'];
 }

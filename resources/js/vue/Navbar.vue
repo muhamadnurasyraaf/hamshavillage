@@ -21,11 +21,6 @@
                 this.$router.push({ name: 'contact'});
             }
         },
-        data() {
-            return {
-                active:true,
-            }
-        },
     }
 </script>
 <style scoped>
