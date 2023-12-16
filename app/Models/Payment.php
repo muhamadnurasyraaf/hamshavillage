@@ -2,17 +2,17 @@
 
 namespace App\Models;
 
-use App\Models\Room;
+use App\Models\Booking;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Booking extends Model
+class Payment extends Model
 {
     use HasFactory;
 
     protected $guarded = ['id'];
 
-    public function room(){
-       return $this->belongsTo(Room::class);
+    public function booking(){
+        return $this->belongsTo(Booking::class);
     }
 }

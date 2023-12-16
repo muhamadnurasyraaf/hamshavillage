@@ -4,9 +4,12 @@
 
         <div class="form">
             <p>Login</p>
+            <ul v-if="errors.length">
+                <li v-for="(error,index) in errors" :key="index">{{ error }}</li>
+            </ul>
             <input type="text" v-model="user.username" class="text" placeholder="Username.." autocomplete="off">
             <input type="password" v-model="user.password" class="pass" placeholder="Password" autocomplete="off">
-            <button type="submit">Login</button>
+            <button type="submit" @click="login">Login</button>
         </div>
     </div>
     <Footer />
@@ -76,8 +79,30 @@
                 user:{
                     username: '',
                     password: '',
-                }
+                },
+                errors: [],
             }
         },
+        methods:{
+            login(){
+                if(this.user.username !== '' && this.user.password !== ''){
+                    axios.post('api/user/login', this.user)
+                    .then((response) =>{
+                        if(response.data.message == 'Success'){
+                           this.$router.push('/admin/dashboard')
+                        }
+                    })
+                    .catch((error) =>{
+                        if(error.response && error.response.status === 422){
+                            this.errors = Object.values(error.response.data.errors)
+                        }else{
+                            console.error('Login failed',error);
+                        }
+                    })
+                }else{
+                    console.log('Username and passsword are required');
+                }
+            },
+        }
     }
 </script>

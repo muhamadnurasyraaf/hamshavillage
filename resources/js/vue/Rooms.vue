@@ -1,44 +1,32 @@
 <template>
     <Navbar />
-    <div class="content">
-<div class="card" :style="{ backgroundImage: showBackgroundImage ? 'url(/storage/rooms/bg1.jpg)' : ''}">
-    <div class="img-container">
-        <img src="/storage/rooms/bg1.jpg" alt="Image Not Found">
-    </div>
-    <div class="room-details">
-        <h3>Double Room</h3>
-        <p>A room with a double bed, ideal for couples or individuals preferring more space.</p>
-        <button>Book this room</button>
-    </div>
-</div>
+    <div class="content" v-for="room in rooms" :key="room.id">
+        <div class="card" :style="{ backgroundImage: showBackgroundImage ? `url(/storage/rooms/${room.imageUrl})` : ''}">
+            <div class="img-container">
+                <img v-bind:src="`/storage/rooms/${room.imageUrl}`" alt="Image Not Found">
+            </div>
+            <div class="room-details">
+                <h3>{{ room.room_name }}</h3>
+                <p>{{ room.description }}</p>
+                <p style="font-weight: bold;">RM{{ room.price }}</p>
+                <div class="buttons">
+                    <router-link class="button" :to="`/booking/${room.id}`">Book this room</router-link>
+                    <router-link class="btn" :to="`/room-details/${room.id}`">More Details</router-link>
+                </div>
 
-<div class="card" :style="{ backgroundImage: showBackgroundImage ? 'url(/storage/rooms/first_room.jpg)' : ''}">
-    <div class="img-container">
-        <img src="/storage/rooms/secondroom.jpg" alt="">
+            </div>
+        </div>
     </div>
-    <div class="room-details">
-        <h3>Suite</h3>
-        <p>A larger, more luxurious room often comprising a bedroom area and a separate living space.</p>
-        <button>Book this room</button>
-    </div>
-</div>
-
-<div class="card" :style="{ backgroundImage: showBackgroundImage ? 'url(/storage/rooms/secondroom.jpg)' : ''}">
-    <div class="img-container">
-        <img src="storage/rooms/first_room.jpg" alt="">
-    </div>
-    <div class="room-details">
-        <h3>Twin Room</h3>
-        <p>A room with two single beds, suitable for friends or individuals who prefer separate sleeping arrangements.</p>
-        <button>Book this room</button>
-    </div>
-</div>
-</div>
 <Footer />
 </template>
 
 <style scoped>
-button{
+.buttons{
+    display: flex;
+    gap: 1em;
+    align-items: center;
+}
+.button{
   border: none;
   font-family: 'Montserrat',sans-serif;
   padding: 0.7em 1.5em;
@@ -50,12 +38,11 @@ button{
   cursor: pointer;
   transition: all 0.3s ease-in-out;
 }
-button:hover{
+.button:hover{
   background-color: #828382;
   color: #f7f7f7;
 }
 .content{
-    min-height: 85vh;
     margin: 1em auto;
     max-width: 70%;
     display: flex;
@@ -73,7 +60,6 @@ button:hover{
     padding: 1em;
     border-radius: 1em;
     align-items: center;
-    margin: 1em;
     background-image: none;
   }
   .card h3{
@@ -128,7 +114,17 @@ button:hover{
             return {
                 showBackgroundImage:true,
                 active:'rooms',
+                rooms:[],
             }
+        },
+        mounted(){
+            axios.get('/api/rooms')
+            .then((response) => {
+                this.rooms = response.data;
+            })
+            .catch((error) =>{
+
+            })
         },
         created(){
             this.checkScreenWidth();

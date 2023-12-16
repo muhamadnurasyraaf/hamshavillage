@@ -16,3 +16,5 @@ use Illuminate\Support\Facades\Route;
 Route::get('/{any}', function () {
     return view('welcome'); // Return the welcome.blade.php file for all routes
 })->where('any', '.*');
+
+

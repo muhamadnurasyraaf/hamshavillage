@@ -6,18 +6,21 @@
           <h2>Welcome to Hamsha Village's Dashboard</h2>
           <p>Manage your village with ease</p>
         </div>
-
         <!-- Buttons for Navigation -->
         <div class="dashboard-buttons">
-          <router-link to="/admin/bookinghistory" class="dashboard-button">
+          <router-link to="/admin/ongoingbooking" class="dashboard-button">
             <button>Manage Bookings</button>
           </router-link>
-          <router-link to="/rooms" class="dashboard-button">
+          <router-link to="/admin/bookinghistory" class="dashboard-button">
+            <button>Bookings History</button>
+          </router-link>
+          <router-link to="/admin/room" class="dashboard-button">
             <button>Manage Rooms</button>
           </router-link>
-          <router-link to="/bank_account" class="dashboard-button">
+          <router-link to="/admin/bank_account" class="dashboard-button">
             <button>Manage Account Bank</button>
           </router-link>
+
         </div>
       </div>
       <Footer />
@@ -33,9 +36,10 @@
 
   .dashboard-buttons {
     margin-top: 2em;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+   display: flex;
+    justify-content: space-around;
     gap: 1em;
+    flex-wrap: wrap;
   }
 
   .dashboard-button {
@@ -63,11 +67,20 @@
   <script>
   import Navbar from '../Navbar.vue';
   import Footer from '../Footer.vue';
+import axios from 'axios';
 
   export default {
+    data(){
+        return{
+
+        }
+    },
     components: {
       Navbar,
       Footer,
     },
+    mounted(){
+
+    }
   };
   </script>

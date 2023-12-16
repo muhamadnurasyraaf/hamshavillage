@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('receiving_account_banks', function (Blueprint $table) {
+        Schema::create('chalet_images', function (Blueprint $table) {
             $table->id();
-            $table->string('Bank_Name');
-            $table->string('number_account');
-            $table->string('account_name');
+            $table->string('imageUrl');
+            $table->foreignId('room_id')->references('id')->on('rooms')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('receiving_account_banks');
+        Schema::dropIfExists('chalet_images');
     }
 };

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
@@ -13,21 +14,15 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        $users = User::all();
+        return response()->json($users);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        $user = User::create([
-            'username' => 'asyraaf',
-            'email' => 'masyraaf14@gmail.com',
-            'is_admin' => true,
-            'email_verified_at' => now(), // Assuming email is verified at the time of creation
-            'password' => bcrypt('PythonisSucks98@#'), // Change 'password' to the desired password for the admin user
-        ]);
+    public function autho(){
+        $user = auth()->user();
         return $user;
     }
 
@@ -51,17 +46,28 @@ class UserController extends Controller
 
     }
 
-    /**
-     * Display the specified resource.
-     */
+
     public function show(string $id)
     {
-        //
+
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+    public function login(Request $request){
+        $credentials = $request->validate([
+            'username' => 'required',
+            'password' => 'required',
+        ]);
+
+        if(Auth::attempt($credentials)){
+            $user = Auth::user();
+            $token = $user->createToken('authToken')->accessToken;
+
+            return response()->json(['message' => 'Success', 'token' => $token]);
+        } else {
+            return response()->json(['message' => 'Invalid Credentials'], 401);
+        }
+    }
+
     public function edit(string $id)
     {
         //

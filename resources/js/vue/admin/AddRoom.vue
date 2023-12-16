@@ -1,0 +1,106 @@
+<template>
+    <Navbar />
+    <div class="add-room">
+      <h2>Add a Room</h2>
+      <form @submit.prevent="addRoom">
+        <label for="name">Room Name:</label>
+        <input type="text" id="name" v-model="room.name" required />
+
+        <label for="description">Description:</label>
+        <textarea id="description" v-model="room.description" required></textarea>
+
+        <label for="price">Price:</label>
+        <input type="number" id="price" v-model="room.price" required />
+
+        <label for="images">Images (up to 4):</label>
+        <input type="file" id="images" accept="image/*" @change="handleImageUpload" multiple />
+
+        <button type="submit">Add Room</button>
+      </form>
+    </div>
+    <Footer />
+  </template>
+
+  <script>
+  import Navbar from '../Navbar.vue';
+  import Footer from '../Footer.vue';
+  export default {
+    data() {
+      return {
+        room: {
+          name: '',
+          description: '',
+          price: 0,
+          images: []
+        }
+      };
+    },
+    components:{
+        Navbar,Footer
+    },
+    methods: {
+      addRoom() {
+        // Logic to handle adding the room with room details and images
+        console.log('Room Added:', this.room);
+        // Reset form fields after adding room (You might want to clear these fields in your actual application)
+        this.room = {
+          name: '',
+          description: '',
+          price: 0,
+          images: []
+        };
+      },
+      handleImageUpload(event) {
+        // Handling image upload and storing up to 4 images in room.images array
+        const files = event.target.files;
+        if (files.length > 4) {
+          alert('You can only upload up to 4 images.');
+          return;
+        }
+        this.room.images = [];
+        for (let i = 0; i < files.length; i++) {
+          if (i >= 4) break;
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            this.room.images.push(e.target.result);
+          };
+          reader.readAsDataURL(files[i]);
+        }
+      }
+    }
+  };
+  </script>
+
+  <style scoped>
+  .add-room {
+    max-width: 600px;
+    margin: 0 auto;
+    min-height: 78.3vh;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  label {
+    margin-top: 10px;
+  }
+
+  input[type="text"],
+  input[type="number"],
+  textarea {
+    width: 100%;
+    padding: 5px;
+    margin-top: 5px;
+  }
+
+  button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+  }
+  </style>
