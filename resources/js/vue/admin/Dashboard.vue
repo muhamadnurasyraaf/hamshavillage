@@ -30,7 +30,7 @@
   <style scoped>
   .content {
     width: 70%;
-    height: 73vh;
+    height: 74vh;
     margin: 2em auto;
   }
 

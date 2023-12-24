@@ -1,96 +1,119 @@
 <template>
-    <Navbar />
-    <div class="booking-details">
-      <div class="card">
-        <div v-if="loading" class="loading-text">Loading...</div>
-        <div v-else>
-          <div v-if="error" class="error-text">{{ error }}</div>
-          <div v-else>
-            <h2>Booking Details</h2>
-            <div v-if="booking" class="booking-info">
-              <p><strong>Booking ID:</strong> {{ booking.id }}</p>
-              <p><strong>Room ID:</strong> {{ booking.room_id }}</p>
-              <!-- Display other booking details as needed -->
-            </div>
-            <div v-else>
-              <p>No booking details available.</p>
-            </div>
+    <div>
+      <Navbar />
+      <div class="container">
+        <!-- Display Booking Details -->
+        <div class="booking-details">
+          <h2>Booking Details</h2>
+          <p><strong>Booking ID:</strong> {{ bookingId }}</p>
+          <p><strong>Room Type:</strong> {{ room ? room.room_name : 'No room selected' }}</p>
+          <p><strong>Date:</strong> {{ bookingDetails.checkin_date }}</p>
+        </div>
+        <button @click="redirectHome">back to home</button>
+        <div v-if="paymentReceipt" class="payment-receipt">
+          <h2>Payment Receipt</h2>
+          <div v-if="isImage" class="receipt-image">
+            <img :src="`../${paymentReceipt}`" alt="Payment Receipt" />
+          </div>
+          <div v-else class="receipt-pdf">
+            <embed :src="`../${paymentReceipt}`" type="application/pdf" width="100%" height="600px" />
           </div>
         </div>
+
       </div>
+      <Footer />
     </div>
-    <Footer />
   </template>
 
   <script>
+  import axios from 'axios';
   import Navbar from '../Navbar.vue';
   import Footer from '../Footer.vue';
-  import axios from 'axios';
 
   export default {
+    components: {
+      Navbar,
+      Footer
+    },
     data() {
       return {
-        booking: null,
-        loading: false,
-        error: null,
+        bookingId: this.$route.params.id,
+        bookingDetails: {},
+        paymentReceipt: null,
+        isImage: true,
+        room: null
       };
     },
     mounted() {
-      const bookingId = this.$route.params.id;
-      this.fetchBookingDetails(bookingId);
+      this.fetchBookingDetails();
+      this.handleFileUpload();
+    },
+    watch: {
+      '$route.params.id': function(newBookingId) {
+        this.bookingId = newBookingId;
+        this.fetchBookingDetails();
+      }
     },
     methods: {
-      fetchBookingDetails(bookingId) {
-        this.loading = true;
-        axios.get(`/api/booking/${bookingId}`)
-          .then(response => {
-            this.booking = response.data.data;
-            this.loading = false;
+      fetchBookingDetails() {
+        axios.get(`/api/booking/find/${this.bookingId}`)
+          .then((response) => {
+            this.bookingDetails = response.data.data;
+            this.room = response.data.room;
+            this.paymentReceipt = response.data.payment.file_url;
+            console.log(response);
           })
-          .catch(error => {
-            this.error = 'Error fetching booking details';
-            this.loading = false;
-            console.log(error);
+          .catch((error) => {
+            console.error('Error fetching data', error);
           });
       },
-    },
-    components: {
-      Navbar,
-      Footer,
+      handleFileUpload() {
+            const file = this.paymentReceipt;
+              if (file) {
+                const allowedImageExtensions = ['.png', '.jpg', '.jpeg'];
+                const fileExtension = file.name.toLowerCase().split('.').pop();
+
+               if(allowedImageExtensions.includes(file[0]['type'])){
+                this.isImage = true;
+               }
+
+              } else {
+                console.error('No file selected.');
+              }
+          },
+          redirectHome(){
+            this.$router.push('/');
+          }
+        },
     }
-  };
   </script>
+
   <style scoped>
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+
   .booking-details {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  padding: 20px;
-}
+    background-color: #f5f5f5;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
 
-.card {
-  width: 90%; /* Adjust the width as needed */
-  max-width: 600px; /* Set a maximum width */
-  background-color: #e1bee7;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-}
+  .payment-receipt {
+    padding: 20px;
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
+  }
 
-h2 {
-  font-size: 24px;
-  margin-bottom: 20px;
-}
+  .receipt-image img {
+    max-width: 100%;
+  }
 
-.booking-info {
-  /* Additional styling for booking details */
-}
-
-.loading-text,
-.error-text {
-  text-align: center;
-  margin-top: 20px;
-  color: #ff0000;
-}
+  .file-upload {
+    margin-top: 20px;
+    padding: 10px;
+  }
   </style>

@@ -31,7 +31,7 @@
 <style scoped>
   main {
     padding: 20px;
-    height: 75.6vh;
+    height:77vh;
 
   }
   body {
@@ -73,10 +73,6 @@
         padding-bottom:10em;
       }
     }
-    .content{
-        height: 79.9vh;
-    }
-
 
 </style>
 <script>

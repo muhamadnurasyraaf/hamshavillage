@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Payment;
 use App\Models\Room;
 use App\Models\Booking;
 use Carbon\Carbon;
@@ -90,11 +91,13 @@ class BookingController extends Controller
             $booking = Booking::findOrFail($id);
             $room = $booking->room;
             $bank = ReceivingAccountBank::find(1);
+            $payment = Payment::where('booking_id',$id)->first();
             return response()->json([
                 'success' => true,
                 'data' => $booking,
                 'room' => $room,
                 'bank' => $bank,
+                'payment' => $payment,
             ]);
         }catch(\Exception $e){
             return response()->json([

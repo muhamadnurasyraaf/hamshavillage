@@ -15,7 +15,7 @@ import RoomDetail from './vue/RoomDetail.vue';
 import BankAccount from './vue/admin/BankAccount.vue';
 import RoomAdmin from './vue/admin/RoomAdmin.vue';
 import AddRoom from './vue/admin/AddRoom.vue';
-import UserManagement from './vue/admin/UserManagement.vue';
+import CompleteBooking from './vue/CompleteBooking.vue';
 import { createRouter,createWebHistory } from 'vue-router';
 const routes = [
     { path: '/' , component: App },
@@ -33,7 +33,7 @@ const routes = [
     { path: '/room-details/:id' , component:RoomDetail ,props:true },
     { path: '/booking-details/:id', component:BookingDetails, name:'booking-details' },
     { path: '/payment/:id' , name:'payment' , component:Payment  , props:true},
-    { path: '/admin/user-management', component:UserManagement }
+    { path: '/book-completed/:id', component:CompleteBooking ,props:true},
 ]
 
 const router = createRouter({

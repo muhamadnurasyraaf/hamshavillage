@@ -35,7 +35,7 @@ import Footer from '../Footer.vue';
 export default {
   components: {
     Navbar,
-    Footer,
+    Footer
   },
   data() {
     return {
@@ -65,8 +65,7 @@ export default {
       }
     },
     viewBookingDetails(bookingId) {
-      // Redirect to a page that displays details about the booking with ID = bookingId
-      // Replace '/booking-details' with the actual route or path for the booking details page
+
       this.$router.push(`/booking-details/${bookingId}`);
     },
   },
@@ -74,14 +73,12 @@ export default {
 </script>
 
 <style>
-/* ... existing styles ... */
 
 .card-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
   gap: 20px;
-
 }
 
 .card {

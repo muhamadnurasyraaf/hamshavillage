@@ -1,11 +1,11 @@
 <template>
     <div>
         <Navbar />
-        <header>
-    <div class="title-container">
-      <h1 class="title">Hamsha Village Homestay</h1>
-      <p>Cozy Chalets &bull; Refreshing Morning Air &bull; Picturesque Rice Field Scenery</p>
-    </div>
+        <header :style="{ backgroundImage: 'url(/storage/backgrounds/bg1.jpg)'}">
+            <div class="title-container">
+            <h1 class="title">Hamsha Village Homestay</h1>
+            <p>Cozy Chalets &bull; Refreshing Morning Air &bull; Picturesque Rice Field Scenery</p>
+            </div>
    </header>
    <p class="about-us">
     About Us
@@ -90,7 +90,6 @@
     header{
   background-position: center;
   height: 89.5vh;
-  background-image: url('storage/backgrounds/bg.jpg');
   background-repeat: no-repeat;
   background-size: cover;
   display: flex;

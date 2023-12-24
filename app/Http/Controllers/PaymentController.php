@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Exception;
+use App\Models\Booking;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 use Dotenv\Exception\InvalidFileException;
@@ -29,10 +30,10 @@ class PaymentController extends Controller
       try {
         // Validate request
         $request->validate([
-          'payment_receipt' => 'required|file|mimes:pdf,jpeg,png,gif|max:10240',
+          'payment_receipt' => 'required|file|mimes:pdf,jpeg,png|max:10240',
           'booking_id' => 'required|numeric', // Validation for booking_id
         ]);
-
+        $booking = Booking::find($request['booking_id']);
         // Process file upload
         $file = $request->file('payment_receipt');
         if (!$file->isValid()) {
@@ -45,7 +46,8 @@ class PaymentController extends Controller
         $pay->file_url = $filePath;
         $pay->booking_id = $request->input('booking_id');
         $pay->save();
-
+        $booking->paid = 1;
+        $booking->save();
         // Return success response
         return response()->json(['message' => 'File uploaded successfully']);
       } catch (InvalidFileException $e) {

@@ -25,7 +25,7 @@
           <li>Bank Name: {{ bank.Bank_Name }}</li>
         </ul>
         <h3>Total : RM{{ room.price }} + RM{{ booking.extra_mat * 20 }} (extra mattress) + RM{{ booking.breakfast * 10}} (Breakfast)  = RM{{ price }}</h3>
-        <p>Once you have made your payment, please upload the payment confirmation receipt below.</p>
+        <p>Once you have made your payment, please upload the payment confirmation receipt below[Prefer in image/screenshots(jpg,jpeg,png)].</p>
         <input type="file" id="paymentConfirmationReceipt" />
         <button @click="submitPayment">Submit Payment</button>
       </div>
@@ -77,7 +77,7 @@
       axios.post('/api/payment/store', formda,config)
         .then((response) =>{
             console.log(response.data);
-            this.$router.push('/');
+            this.$router.push(`/book-completed/${this.bookingId}`);
         })
         .catch((error)=>{
             console.error('Error submitting payment: ' , error);
