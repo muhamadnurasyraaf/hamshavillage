@@ -1,6 +1,7 @@
 <template>
     <Navbar />
     <div class="content" v-for="room in rooms" :key="room.id">
+
         <div class="card" :style="{ backgroundImage: showBackgroundImage ? `url(/storage/rooms/${room.imageUrl})` : ''}">
             <div class="img-container">
                 <img v-bind:src="`/storage/rooms/${room.imageUrl}`" alt="Image Not Found">
@@ -10,7 +11,8 @@
                 <p>{{ room.description }}</p>
                 <p style="font-weight: bold;">RM{{ room.price }}</p>
                 <div class="buttons">
-                    <router-link class="button" :to="`/booking/${room.id}`">Book this room</router-link>
+                    <router-link class="button" v-if="!room.isBooked" :to="`/booking/${room.id}`">Book this room</router-link>
+                    <p v-if="room.isBooked" style="color: red;">The room is already booked</p>
                     <router-link class="btn" :to="`/room-details/${room.id}`">More Details</router-link>
                 </div>
 

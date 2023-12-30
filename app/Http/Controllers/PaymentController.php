@@ -39,9 +39,12 @@ class PaymentController extends Controller
         if (!$file->isValid()) {
           throw new InvalidFileException('Invalid file');
         }
+        $room = $booking->room;
 
+        $room->isBooked = 1;
+        $room->save();
         // Save file and update database
-        $filePath = $file->store('receipts');
+        $filePath = $file->store('receipts','public');
         $pay = new Payment();
         $pay->file_url = $filePath;
         $pay->booking_id = $request->input('booking_id');

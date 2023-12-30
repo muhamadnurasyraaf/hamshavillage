@@ -5,8 +5,8 @@
 
       <!-- Carousel for room images -->
       <div class="carousel">
-        <div class="slide" v-for="(image, index) in room.images" :key="index" :class="{ active: index === activeIndex }">
-          <img :src="image" alt="Room Image" class="room-image" />
+        <div class="slide" v-for="(image, index) in images" :key="index" :class="{ active: index === activeIndex }">
+          <img :src="imageUrl" alt="Room Image" class="room-image" />
         </div>
         <div class="carousel-controls">
           <button @click="prevSlide" class="control-btn">&lt;</button>
@@ -16,7 +16,7 @@
 
       <p>Description: {{ room.description }}</p>
 
-      <p>Price: ${{ room.price }}</p>
+      <p>Price: RM{{ room.price }}</p>
     </div>
     <Footer />
   </template>
@@ -30,21 +30,22 @@ import Navbar from './Navbar.vue';
     },
     data() {
       return {
-        room: {
-          name: 'Example Room',
-          images: [
-          'storage/rooms/bed_eng.jpg',
-            'storage/rooms/inside_ck1.jpg',
-        ],
-          description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vel eros vitae purus sodales suscipit.',
-          price: 150 // Replace with the actual room price
-        },
+        room: {},
         roomId:0,
-        activeIndex: 0
+        activeIndex: 0,
+        images:{}
       };
     },
     mounted(){
         this.roomId = this.$route.params.id;
+        axios.get(`/api/room/find/${this.roomId}`)
+        .then((response) =>{
+            this.room = response.data.room;
+            this.images = response.data.images;
+        })
+        .catch((error)=>{
+
+        })
     },
     methods: {
       nextSlide() {

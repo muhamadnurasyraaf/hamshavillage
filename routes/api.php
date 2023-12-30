@@ -31,7 +31,8 @@ Route::get('/rooms',[RoomController::class,'index']);
 Route::prefix('/room')->group( function(){
     Route::post('/store',[RoomController::class,'store']);
     Route::put('/update',[RoomController::class,'update']);
-    Route::delete('/delete',[RoomController::class,'destroy']);
+    Route::delete('/delete/{id}',[RoomController::class,'destroy']);
+    Route::get('/find/{id}',[RoomController::class,'show']);
     Route::get('/faker',[RoomController::class,'create']);
 });
 

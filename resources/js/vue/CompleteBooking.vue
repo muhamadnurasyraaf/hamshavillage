@@ -1,10 +1,18 @@
 <template>
     <div class="booking-details">
+        <h3>Congratulations,Your Booking Completed!</h3>
       <h2>Booking Details</h2>
-      <div v-if="bookingDetails" class="details-container">
-        <p><strong>Booking ID:</strong> {{ bookingDetails.bookingId }}</p>
-        <p><strong>Customer Name:</strong> {{ bookingDetails.customerName }}</p>
-        <!-- Add other booking details here -->
+      <div v-if="booking" class="details-container">
+        <p><strong>Booking ID:</strong> {{ booking.id }}</p>
+        <p><strong>Customer Name:</strong> {{ booking.name }}</p>
+        <p><strong>Customer Email:</strong> {{ booking.email }}</p>
+        <p><strong>Phone Number:</strong> {{ booking.phonenumber }}</p>
+        <p><strong>Notes:</strong> {{ booking.notes }}</p>
+        <p><strong>Check In Date:</strong> {{ booking.checkin_date }}</p>
+        <p><strong>Check Out Date:</strong> {{ booking.checkout_date }}</p>
+        <p><strong>Breakfast:</strong> {{ booking.breakfast }}</p>
+        <p><strong>Extra Mattress:</strong> {{ booking.extra_mat }}</p>
+        <p><strong>Total:</strong> RM{{ booking.cost }}</p>
 
         <p class="screenshot-info">
           Please take a screenshot of this page as evidence of your booking.
@@ -19,15 +27,23 @@
   </template>
 
   <script>
+import axios from 'axios';
+
   export default {
     data() {
       return {
-        bookingDetails: {
-          bookingId: this.$route.params.id,
-          customerName: 'John Doe',
-          // Other booking details
-        },
+        bookingId:this.$route.params.id,
+        booking:{},
       };
+    },
+    mounted(){
+        axios.get(`/api/booking/find/${this.bookingId}`)
+        .then((response) =>{
+            this.booking = response.data.data;
+        })
+        .catch((response)=>{
+
+        })
     },
     methods:{
         backtoHome(){

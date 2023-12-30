@@ -1,108 +1,140 @@
 <template>
     <Navbar />
-    <div class="room-management">
+    <div class="content" v-for="room in rooms" :key="room.id">
 
-      <div class="room-cards">
-        <button @click="nav()">Add a room</button>
-        <div v-for="room in rooms" :key="room.id" class="room-card">
-          <h3>{{ room.name }}</h3>
-          <div class="room-images">
-            <img v-for="(image, index) in room.images" :key="index" :src="image" alt="Room Image" />
-          </div>
-          <p>Description: {{ room.description }}</p>
-          <p>Price: ${{ room.price }}</p>
-          <div class="card-buttons">
-            <button @click="editRoom(room)">Edit</button>
-            <button @click="deleteRoom(room.id)">Delete</button>
-          </div>
+        <div class="card" :style="{ backgroundImage: showBackgroundImage ? `url(/storage/rooms/${room.imageUrl})` : ''}">
+            <div class="img-container">
+                <img v-bind:src="`/storage/rooms/${room.imageUrl}`" alt="Image Not Found">
+            </div>
+            <div class="room-details">
+                <h3>{{ room.room_name }}</h3>
+                <p>{{ room.description }}</p>
+                <p style="font-weight: bold;">RM{{ room.price }}</p>
+                <div class="buttons">
+                    <button class="button">Delete this room</button>
+                    <router-link class="btn" :to="`/room-details/${room.id}`">More Details</router-link>
+                </div>
+
+            </div>
         </div>
-      </div>
-
-      <div v-if="rooms.length === 0">
-        <p>No rooms available.</p>
-      </div>
     </div>
-    <Footer />
-  </template>
+<Footer />
+</template>
 
-  <script>
-import Navbar from '../Navbar.vue';
-import Footer from '../Footer.vue';
-  export default {
-    data() {
-        return {
-            rooms: [
-                {
-                    id: 1,
-                    name: 'Example Room 1',
-                    images: ['image_url_1.jpg', 'image_url_2.jpg'],
-                    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-                    price: 100
-                },
-                {
-                    id: 2,
-                    name: 'Example Room 2',
-                    images: ['image_url_3.jpg', 'image_url_4.jpg'],
-                    description: 'Nulla vel eros vitae purus sodales suscipit.',
-                    price: 120
-                }
-                // Add more room objects as needed
-            ]
-        };
-    },
-    methods: {
-        editRoom(room) {
-            // Logic for editing a room
-            console.log("Edit room:", room);
-        },
-        deleteRoom(roomId) {
-            // Logic for deleting a room
-            console.log("Delete room with ID:", roomId);
-        },
-        nav(){
-            this.$router.push({name:'add-room'});
-        }
-    },
-    components: { Navbar,Footer }
-};
-  </script>
-
-  <style>
-  .room-management {
+<style scoped>
+.buttons{
     display: flex;
+    gap: 1em;
+    align-items: center;
+}
+.button{
+  border: none;
+  font-family: 'Montserrat',sans-serif;
+  padding: 0.7em 1.5em;
+  border-radius: 0.3em;
+  font-weight: bold;
+  background-color: #43f543;
+  outline: none;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+.button:hover{
+  background-color: #828382;
+  color: #f7f7f7;
+}
+.content{
+    margin: auto auto;
+    max-width: 70%;
+    display: flex;
+    justify-content: center;
     flex-wrap: wrap;
-    justify-content: space-around;
-    align-items: flex-start;
-    padding: 20px;
   }
-
-  .room-card {
-    width: 300px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    padding: 10px;
-    margin: 10px;
-  }
-
-  .room-card h3 {
-    margin-top: 0;
-  }
-
-  .room-images {
+  .card{
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
+    height: 35vh;
+    justify-content: space-around;
+    gap: 0.5em;
+    width: 65%;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+    padding: 1em;
+    border-radius: 1em;
+    align-items: center;
+    background-image: none;
   }
+  .card h3{
+    font-family: 'Montserrat Alternates',sans-serif;
+    text-decoration: overline;
+  }
+  .img-container{
+    width: 37%;
+  }
+  .room-details{
+    width: 50%;
+  }
+  .img-container img{
+    width: 70%;
+    border-radius: 1.5em;
+  }
+  @media screen and (max-width: 480px){
+    .card{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        margin: 20px 0;
+        background-size:cover;
+        background-position: center;
+    }
+    .img-container img{
+      display: none;
+    }
+    .room-details{
+        line-height: 1;
+    }
+    .card h3{
+        color: rgb(230, 157, 67);
+    }
+    .card p{
+        color: #fffcfc;
+    }
 
-  .room-images img {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 5px;
-    margin-right: 5px;
-  }
 
-  .card-buttons button {
-    margin-right: 5px;
   }
-  </style>
+</style>
+
+<script>
+    import Navbar from '../Navbar.vue';
+    import Footer from '../Footer.vue';
+    export default{
+        components:{
+            Navbar,
+            Footer,
+        },
+        data(){
+            return {
+                showBackgroundImage:true,
+                active:'rooms',
+                rooms:[],
+            }
+        },
+        mounted(){
+            axios.get('/api/rooms')
+            .then((response) => {
+                this.rooms = response.data;
+            })
+            .catch((error) =>{
+
+            })
+        },
+        created(){
+            this.checkScreenWidth();
+            window.addEventListener('resize',this.checkScreenWidth);
+        },
+        methods:{
+            checkScreenWidth(){
+                this.showBackgroundImage = window.innerWidth <= 480;
+            },
+        }
+
+    }
+</script>

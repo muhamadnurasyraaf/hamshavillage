@@ -3,21 +3,28 @@
       <Navbar />
       <div class="container">
         <!-- Display Booking Details -->
+        <div v-if="errors && Object.keys(errors).length > 0">
+            <ul>
+                <li v-for="(error,key) in errors" :key="key">
+                    <p style="color: red;">{{ error }}</p>
+                </li>
+            </ul>
+        </div>
         <div class="booking-details">
           <h2>Booking Details</h2>
           <p><strong>Booking ID:</strong> {{ bookingId }}</p>
           <p><strong>Room Type:</strong> {{ room ? room.room_name : 'No room selected' }}</p>
           <p><strong>Date:</strong> {{ bookingDetails.checkin_date }}</p>
+          <div>{{ paymentReceipt }}</div>
         </div>
         <button @click="redirectHome">back to home</button>
         <div v-if="paymentReceipt" class="payment-receipt">
           <h2>Payment Receipt</h2>
           <div v-if="isImage" class="receipt-image">
-            <img :src="`../${paymentReceipt}`" alt="Payment Receipt" />
+            <img :src="`../storage/${paymentReceipt}`" alt="Payment Receipt" />
+            <a :href="`../storage/${paymentReceipt}`" download>Download Receipt</a>
           </div>
-          <div v-else class="receipt-pdf">
-            <embed :src="`../${paymentReceipt}`" type="application/pdf" width="100%" height="600px" />
-          </div>
+
         </div>
 
       </div>
@@ -41,12 +48,12 @@
         bookingDetails: {},
         paymentReceipt: null,
         isImage: true,
-        room: null
+        room: null,
+        errors:[],
       };
     },
     mounted() {
       this.fetchBookingDetails();
-      this.handleFileUpload();
     },
     watch: {
       '$route.params.id': function(newBookingId) {
@@ -67,23 +74,8 @@
             console.error('Error fetching data', error);
           });
       },
-      handleFileUpload() {
-            const file = this.paymentReceipt;
-              if (file) {
-                const allowedImageExtensions = ['.png', '.jpg', '.jpeg'];
-                const fileExtension = file.name.toLowerCase().split('.').pop();
 
-               if(allowedImageExtensions.includes(file[0]['type'])){
-                this.isImage = true;
-               }
 
-              } else {
-                console.error('No file selected.');
-              }
-          },
-          redirectHome(){
-            this.$router.push('/');
-          }
         },
     }
   </script>

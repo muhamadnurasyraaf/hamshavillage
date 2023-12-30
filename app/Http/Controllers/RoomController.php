@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ChaletImage;
 use App\Models\Room;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -14,7 +15,8 @@ class RoomController extends Controller
      */
     public function index()
     {
-       $rooms = Room::all();
+       $rooms = Room::with('images')->get();
+
        return response()->json($rooms);
     }
 
@@ -28,13 +30,7 @@ class RoomController extends Controller
             'number_account' => '1212 2010 011759',
             'account_name' => 'TETUAN HAMSHA BEAULICIOUS & CAFE',
         ]);
-        $user = User::create([
-            'username' => 'asyraaf',
-            'email' => 'masyraaf14@gmail.com',
-            'is_admin' => true,
-            'email_verified_at' => now(), // Assuming email is verified at the time of creation
-            'password' => bcrypt('PythonisSucks98@#'), // Change 'password' to the desired password for the admin user
-        ]);
+
         // FAMILY CHALET
     Room::create([
         'room_name' => 'FAMILY CHALET',
@@ -77,7 +73,7 @@ class RoomController extends Controller
     Room::create([
         'room_name' => 'ENGLISH CALET',
         'description' => '2 Dewasa 2 Kanak2. Sekiranya ada tambahan, Extra Tilam RM20.',
-        'price' => 150, // Adjusted price for ENGLISH CALET (for example)
+        'price' => 150,// Adjusted price for ENGLISH CALET (for example)
         'imageUrl' => 'stairs_eng.jpg',
     ]);
 
@@ -95,9 +91,14 @@ class RoomController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $room = Room::find($id);
+        $images = ChaletImage::where('room_id',$id);
+        return response()->json([
+            'room' => $room,
+            'images' => $images,
+        ]);
     }
 
     /**
@@ -119,8 +120,20 @@ class RoomController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        try {
+            $room = Room::find($id);
+            if (!$room) {
+                return response()->json(['error' => 'Room not found'], 404);
+            }
+
+            $room->delete(); // Correct method to delete the record
+
+            return response()->json(['message' => 'Successfully deleted a room']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to delete room', 'details' => $e->getMessage()], 500);
+        }
     }
+
 }

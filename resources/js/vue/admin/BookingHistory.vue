@@ -2,7 +2,7 @@
   <div class="bookings-list">
     <Navbar />
     <div class="content">
-      <h2>Bookings List</h2>
+      <h2>Bookings History List</h2>
       <div v-if="loading" class="loading-text">Loading...</div>
       <div v-else>
         <div v-if="bookings.length === 0" class="no-bookings-text">No bookings found.</div>
@@ -72,8 +72,10 @@ export default {
 };
 </script>
 
-<style>
-
+<style scoped>
+.content{
+  min-height:78vh;
+}
 .card-container {
   display: flex;
   flex-wrap: wrap;

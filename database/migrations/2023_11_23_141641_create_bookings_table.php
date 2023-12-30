@@ -24,6 +24,7 @@ return new class extends Migration
             $table->integer('breakfast')->default(0);
             $table->float('cost');
             $table->boolean('paid')->default(false);
+            $table->boolean('isCompleted')->default(false);
             $table->integer('extra_mat')->default(0);
             $table->timestamps();
         });

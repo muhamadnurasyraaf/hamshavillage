@@ -11,4 +11,7 @@ class Room extends Model
 
     protected $guarded = ['id'];
 
+    public function images(){
+        return $this->hasMany(ChaletImage::class);
+    }
 }

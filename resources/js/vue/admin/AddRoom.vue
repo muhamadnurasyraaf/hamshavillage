@@ -14,6 +14,12 @@
 
         <label for="images">Images (up to 4):</label>
         <input type="file" id="images" accept="image/*" @change="handleImageUpload" multiple />
+        <div v-if="room.images.length > 0">
+          <p>Uploaded Image Names:</p>
+          <ul>
+            <li v-for="(image, index) in room.images" :key="index">{{ image.name }}</li>
+          </ul>
+        </div>
 
         <button type="submit">Add Room</button>
       </form>
@@ -31,12 +37,13 @@
           name: '',
           description: '',
           price: 0,
-          images: []
+          images: [] // Storing images as objects containing file data
         }
       };
     },
-    components:{
-        Navbar,Footer
+    components: {
+      Navbar,
+      Footer
     },
     methods: {
       addRoom() {
@@ -51,25 +58,34 @@
         };
       },
       handleImageUpload(event) {
-        // Handling image upload and storing up to 4 images in room.images array
         const files = event.target.files;
-        if (files.length > 4) {
+        if (files.length + this.room.images.length > 4) {
           alert('You can only upload up to 4 images.');
           return;
         }
-        this.room.images = [];
+
         for (let i = 0; i < files.length; i++) {
-          if (i >= 4) break;
+          if (this.room.images.length >= 4) break; // Limit to 4 images
+          const file = files[i];
           const reader = new FileReader();
+
           reader.onload = (e) => {
-            this.room.images.push(e.target.result);
+            // Push image data including name into room.images array
+            this.room.images.push({
+              dataURL: e.target.result,
+              name: file.name // Store the name of the uploaded file
+            });
           };
-          reader.readAsDataURL(files[i]);
+          reader.readAsDataURL(file);
         }
       }
     }
   };
   </script>
+
+  <style scoped>
+  /* Your existing styles */
+  </style>
 
   <style scoped>
   .add-room {
