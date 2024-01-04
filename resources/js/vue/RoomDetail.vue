@@ -1,12 +1,12 @@
 <template>
     <Navbar />
     <div class="room-details">
-      <h2>{{ room.name }} : {{ roomId }}</h2>
+      <h2>{{ room.room_name }} : {{ roomId }}</h2>
 
       <!-- Carousel for room images -->
       <div class="carousel">
         <div class="slide" v-for="(image, index) in images" :key="index" :class="{ active: index === activeIndex }">
-          <img :src="imageUrl" alt="Room Image" class="room-image" />
+          <img v-bind:src="image.imageUrl" alt="Room Image" class="room-image" />
         </div>
         <div class="carousel-controls">
           <button @click="prevSlide" class="control-btn">&lt;</button>
@@ -36,6 +36,9 @@ import Navbar from './Navbar.vue';
         images:{}
       };
     },
+    props:{
+        id:String,
+    },
     mounted(){
         this.roomId = this.$route.params.id;
         axios.get(`/api/room/find/${this.roomId}`)
@@ -44,71 +47,71 @@ import Navbar from './Navbar.vue';
             this.images = response.data.images;
         })
         .catch((error)=>{
-
+            console.error('Error fetching data',error)
         })
     },
     methods: {
       nextSlide() {
-        this.activeIndex = (this.activeIndex + 1) % this.room.images.length;
+        this.activeIndex = (this.activeIndex + 1) % this.images.length;
       },
       prevSlide() {
-        this.activeIndex = (this.activeIndex - 1 + this.room.images.length) % this.room.images.length;
+        this.activeIndex = (this.activeIndex - 1 + this.images.length) % this.images.length;
       }
     }
   };
   </script>
 
-  <style scoped>
-  .room-details {
-    text-align: center;
-    padding: 20px;
-    min-height: 76.2vh;
-  }
+<style scoped>
+.room-details {
+  text-align: center;
+  padding: 20px;
+  min-height: 76.2vh;
+}
 
+.carousel {
+  position: relative;
+  max-width: 500px; /* Adjust maximum width for the carousel */
+  margin: 0 auto;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.slide {
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.slide.active {
+  display: flex;
+}
+
+.room-image {
+  max-width: 100%;
+  height: auto;
+  max-height: 300px; /* Increased maximum height for images */
+}
+
+.carousel-controls {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.control-btn {
+  background: rgba(255, 255, 255, 0.5);
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 1.2em;
+}
+
+@media (max-width: 768px) {
   .carousel {
-    position: relative;
-    max-width: 300px; /* Set maximum width for the carousel */
-    margin: 0 auto;
-    overflow: hidden;
-    margin-bottom: 20px;
+    max-width: 80%;
   }
-
-  .slide {
-    display: none;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .slide.active {
-    display: flex;
-  }
-
-  .room-image {
-    max-width: 100%;
-    height: auto;
-    max-height: 200px; /* Set maximum height for images */
-  }
-
-  .carousel-controls {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .control-btn {
-    background: rgba(255, 255, 255, 0.5);
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
-    font-size: 1.2em;
-  }
-
-  @media (max-width: 768px) {
-    .carousel {
-      max-width: 80%;
-    }
-  }
-  </style>
+}
+</style>

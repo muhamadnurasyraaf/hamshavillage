@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('chalet_images', function (Blueprint $table) {
             $table->id();
-            $table->string('imageUrl');
+            $table->text('imageUrl');
             $table->foreignId('room_id')->references('id')->on('rooms')->onDelete('cascade');
             $table->timestamps();
         });

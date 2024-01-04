@@ -25,7 +25,7 @@
         <div class="form-group">
             <label for="Room_Choice">Room Choice</label>
             <select id="Room_Choice" v-model="selectedRoom">
-                <option v-for="room in rooms" :key="room.id" :value="room.id">{{ room.room_name }}</option>
+                <option  v-for="room in filteredRooms" :key="room.id" :value="room.id" >{{ room.room_name }}</option>
             </select>
         </div>
         <div class="form-group">
@@ -33,13 +33,8 @@
         <textarea id="notes" v-model="formData.notes" rows="4"></textarea>
         </div>
         <div class="extra_mat">
-            <p for="extra">Extra mattress(optional)</p>
-            <div class="buttons">
-                <button @click="increase" type="button">+</button>
-                <input type="number" id="extra" v-model="quantity" readonly>
-                <button @click="decrease" type="button">-</button>
-            </div>
-
+            <p for="extra">Extra mattress(optional:RM20)</p>
+            <input type="checkbox" id="extra_mat">
         </div>
         <div class="extra_mat">
             <p for="extra">Breakfast [RM10 per pax (optional)]</p>
@@ -88,6 +83,7 @@ h1 {
     align-items: center;
    gap: 1em;
    height: 2em;
+   margin-bottom: 1em;
 }
 
 .buttons{
@@ -169,6 +165,11 @@ import Footer from './Footer.vue';
                 },
             }
         },
+        computed:{
+            filteredRooms(){
+                return this.rooms.filter(room => !room.isBooked);
+            }
+        },
         mounted(){
             axios.get('/api/rooms')
             .then((response) => {
@@ -191,8 +192,9 @@ import Footer from './Footer.vue';
         },
         methods:{
             submitForm(){
+                const extraInput = document.getElementById('extra_mat');
                 this.formData.room_id = this.selectedRoom;
-                this.formData.extra_mat = this.quantity;
+                this.formData.extra_mat = extraInput.checked ? 1 : 0;
                 axios.post('/api/booking/store',this.formData)
                 .then((response) => {
                     console.log('Form submitted succesfully : ' , response.data);

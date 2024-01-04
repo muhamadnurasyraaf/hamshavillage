@@ -19,6 +19,7 @@
   <li>Waktu Check in: selepas 3.00 petang</li>
   <li>Waktu Check out: sebelum 12.00 tengahari</li>
   <li>Extra Tilam Rm 20</li>
+  <li>Breakfast RM10 per pax</li>
 </ul>
 
 <p class="highlight">⭐ MUSLIM FRIENDLY ⭐⭐</p>

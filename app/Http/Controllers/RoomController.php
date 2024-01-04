@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ChaletImage;
+use Exception;
 use App\Models\Room;
 use App\Models\User;
+use App\Models\ChaletImage;
 use Illuminate\Http\Request;
 use App\Models\ReceivingAccountBank;
 
@@ -14,11 +15,25 @@ class RoomController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-       $rooms = Room::with('images')->get();
+{
+    $rooms = Room::with('images')->get();
 
-       return response()->json($rooms);
-    }
+    $formattedRooms = $rooms->map(function ($room) {
+        $firstImage = $room->images->first();
+
+        return [
+            'id' => $room->id,
+            'room_name' => $room->room_name,
+            'description' => $room->description,
+            'price' => $room->price,
+            'imageUrl' => $firstImage ? $firstImage->imageUrl : null, // Change 'url' to the actual attribute name
+            'isBooked' => $room->isBooked, // Adjust as per your data structure
+            // Add more room details if needed
+        ];
+    });
+
+    return response()->json($formattedRooms);
+}
 
     /**
      * Show the form for creating a new resource.
@@ -36,7 +51,6 @@ class RoomController extends Controller
         'room_name' => 'FAMILY CHALET',
         'description' => 'Max 20 org. Extra charge RM15/pax akan dikenakan jika bilangan guest melebihi pax yang telah ditetapkan.',
         'price' => 400, // Adjusted price for FAMILY CHALET (for example)
-        'imageUrl' => 'your_image_url_here',
     ]);
 
     // CHALET KAYU 1 & 2
@@ -44,13 +58,11 @@ class RoomController extends Controller
         'room_name' => 'CHALET KAYU 1',
         'description' => '2 Dewasa 1 Kanak2. Sekiranya ada tambahan, Extra Tilam RM20.',
         'price' => 150, // Adjusted price for CHALET KAYU 1 & 2 (for example)
-        'imageUrl' => 'inside_ck1.jpg',
     ]);
     Room::create([
         'room_name' => 'CHALET KAYU 2',
         'description' => '2 Dewasa 1 Kanak2. Sekiranya ada tambahan, Extra Tilam RM20.',
         'price' => 150, // Adjusted price for CHALET KAYU 1 & 2 (for example)
-        'imageUrl' => 'your_image_url_here',
     ]);
 
     // CHALET MODEN
@@ -58,7 +70,6 @@ class RoomController extends Controller
         'room_name' => 'CHALET MODEN',
         'description' => '2 Dewasa 1 Kanak2. Sekiranya ada tambahan, Extra Tilam RM20.',
         'price' => 150, // Adjusted price for CHALET MODEN (for example)
-        'imageUrl' => 'your_image_url_here',
     ]);
 
     // TINY HOUSE
@@ -66,7 +77,6 @@ class RoomController extends Controller
         'room_name' => 'TINY HOUSE',
         'description' => '2 Dewasa 2 Kanak2. Sekiranya ada tambahan, Extra Tilam RM20.',
         'price' => 150, // Adjusted price for TINY HOUSE (for example)
-        'imageUrl' => 'your_image_url_here',
     ]);
 
     // ENGLISH CALET
@@ -74,7 +84,6 @@ class RoomController extends Controller
         'room_name' => 'ENGLISH CALET',
         'description' => '2 Dewasa 2 Kanak2. Sekiranya ada tambahan, Extra Tilam RM20.',
         'price' => 150,// Adjusted price for ENGLISH CALET (for example)
-        'imageUrl' => 'stairs_eng.jpg',
     ]);
 
     return Room::all();
@@ -85,6 +94,24 @@ class RoomController extends Controller
      */
     public function store(Request $request)
     {
+        try {
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'description' => 'required|string',
+                'price' => 'required|numeric',
+            ]);
+
+             Room::create([
+                'room_name' => $validatedData['name'],
+                'description' => $validatedData['description'],
+                'price' => $validatedData['price'],
+            ]);
+
+            return response()->json(['message' => 'Room created successfully'], 201);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()]);
+        }
+
 
     }
 
@@ -94,7 +121,7 @@ class RoomController extends Controller
     public function show($id)
     {
         $room = Room::find($id);
-        $images = ChaletImage::where('room_id',$id);
+        $images = ChaletImage::where('room_id',$id)->get();
         return response()->json([
             'room' => $room,
             'images' => $images,

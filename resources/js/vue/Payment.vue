@@ -24,7 +24,8 @@
           <li>Account Number: {{ bank.number_account }}</li>
           <li>Bank Name: {{ bank.Bank_Name }}</li>
         </ul>
-        <h3>Total : RM{{ room.price }} + RM{{ booking.extra_mat * 20 }} (extra mattress) + RM{{ booking.breakfast * 10}} (Breakfast)  = RM{{ price }}</h3>
+        <h3>Total : RM{{ room.price }} + RM{{ booking.extra_mat * 20 * booking.days}} (extra mattress) + RM{{ booking.breakfast * 10 * booking.days}} (Breakfast)  = RM{{ price }}</h3>
+        <p>Please note that the price had been adjusted based on number of days</p>
         <p>Once you have made your payment, please upload the payment confirmation receipt below[Prefer in image/screenshots(jpg,jpeg,png)].</p>
         <input type="file" id="paymentConfirmationReceipt" />
         <button @click="submitPayment">Submit Payment</button>
@@ -56,7 +57,7 @@
           this.booking = response.data.data;
           this.room = response.data.room;
           this.bank = response.data.bank;
-          this.price = this.booking.cost + (this.booking.breakfast * 10) + (this.booking.extra_mat * 20);
+          this.price = this.booking.cost;
        })
        .catch((error)=>{
         console.error('Error fetching data ', error)

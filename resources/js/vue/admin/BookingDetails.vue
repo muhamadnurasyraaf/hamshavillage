@@ -2,7 +2,6 @@
     <div>
       <Navbar />
       <div class="container">
-        <!-- Display Booking Details -->
         <div v-if="errors && Object.keys(errors).length > 0">
             <ul>
                 <li v-for="(error,key) in errors" :key="key">
@@ -13,11 +12,22 @@
         <div class="booking-details">
           <h2>Booking Details</h2>
           <p><strong>Booking ID:</strong> {{ bookingId }}</p>
-          <p><strong>Room Type:</strong> {{ room ? room.room_name : 'No room selected' }}</p>
-          <p><strong>Date:</strong> {{ bookingDetails.checkin_date }}</p>
-          <div>{{ paymentReceipt }}</div>
+          <p><strong>Customer's Name:</strong> {{ bookingDetails.name }}</p>
+          <p><strong>Customer's Email:</strong> {{ bookingDetails.email}}</p>
+          <p><strong>Customer's Phone Number:</strong> {{ bookingDetails.phonenumber}}</p>
+          <p><strong>Notes : </strong>{{ bookingDetails.notes }}</p>
+          <p><strong>Room Type : </strong> {{ room ? room.room_name : 'No room selected' }}</p>
+          <p><strong>Breakfast : </strong> {{ bookingDetails.breakfast }}</p>
+          <p><strong>Extra mattress : </strong> {{ bookingDetails.extra_mat }}</p>
+          <p><strong>Check in Date:</strong> {{ bookingDetails.checkin_date }}</p>
+          <p><strong>Check out Date:</strong> {{ bookingDetails.checkout_date }}</p>
+          <p><strong>Total : </strong>RM{{ bookingDetails.cost }}</p>
         </div>
-        <button @click="redirectHome">back to home</button>
+        <div class="btns">
+            <button @click="confirmDelete">Delete this booking details</button>
+            <button @click="confirmSet">Set as Completed</button>
+        </div>
+
         <div v-if="paymentReceipt" class="payment-receipt">
           <h2>Payment Receipt</h2>
           <div v-if="isImage" class="receipt-image">
@@ -55,12 +65,6 @@
     mounted() {
       this.fetchBookingDetails();
     },
-    watch: {
-      '$route.params.id': function(newBookingId) {
-        this.bookingId = newBookingId;
-        this.fetchBookingDetails();
-      }
-    },
     methods: {
       fetchBookingDetails() {
         axios.get(`/api/booking/find/${this.bookingId}`)
@@ -74,13 +78,61 @@
             console.error('Error fetching data', error);
           });
       },
-
-
+      confirmDelete(){
+        if(confirm('Do you confirm you want to delete this booking : ' + this.bookingId)){
+            this.deleteBooking();
+        }
+      },
+      deleteBooking(){
+        axios.delete(`/api/booking/delete/${this.bookingId}`)
+        .then((response)=>{
+            console.log(response.data);
+            this.$router.push('/admin/bookinghistory');
+        })
+        .catch((err)=>{
+            console.error('Error deleting data',err);
+        })
+      },
+      confirmSet(){
+            if(confirm('Do you confirm?')){
+                this.setComplete();
+            }
         },
+        setComplete(){
+            axios.post(`/api/booking/update/${this.bookingId}`)
+            .then((response)=>{
+                alert(response.data.message);
+            }).
+            catch((err)=>{
+                console.error('Error updating data',err);
+            })
+        }
+        },
+
     }
   </script>
 
   <style scoped>
+  .btns button{
+    background-color: #43f543;
+    color: white;
+    border: none;
+    padding: 1em 2em;
+    border-radius: 2em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.4s;
+  }
+  .btns button:hover{
+    background-color: #ccc;
+    color: black;
+  }
+  .btns{
+    display: flex;
+    justify-content: center;
+    margin: 1em 0;
+    gap: 1em;
+  }
   .container {
     max-width: 800px;
     margin: 0 auto;

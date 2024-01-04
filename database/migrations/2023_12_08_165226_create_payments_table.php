@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('booking_id')->references('id')->on('bookings');
+            $table->foreignId('booking_id')->references('id')->on('bookings')->onDelete('cascade');
             $table->string('file_url');
             $table->timestamps();
         });

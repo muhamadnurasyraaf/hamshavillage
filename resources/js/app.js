@@ -16,6 +16,8 @@ import BankAccount from './vue/admin/BankAccount.vue';
 import RoomAdmin from './vue/admin/RoomAdmin.vue';
 import AddRoom from './vue/admin/AddRoom.vue';
 import CompleteBooking from './vue/CompleteBooking.vue';
+import RoomDetailAdmin from './vue/admin/RoomDetailAdmin.vue';
+import AddImage from './vue/admin/AddImage.vue';
 import { createRouter,createWebHistory } from 'vue-router';
 const routes = [
     { path: '/' , component: App },
@@ -23,7 +25,7 @@ const routes = [
     { path: '/booking/:id' , component: Booking , props:true },
     { path: '/booking' , component: Booking},
     { path: '/terms' , component: Terms },
-    { path: '/admin/dashboard' , component: Dashboard},
+    { path: '/admin' , component: Dashboard},
     { path: '/admin/ongoingbooking' , component:OngoingBooking  },
     { path: '/admin/bookinghistory' , component:BookingHistory   },
     { path:'/admin/bank_account' , component:BankAccount  },
@@ -34,6 +36,8 @@ const routes = [
     { path: '/booking-details/:id', component:BookingDetails, name:'booking-details' },
     { path: '/payment/:id' , name:'payment' , component:Payment  , props:true},
     { path: '/book-completed/:id', component:CompleteBooking ,props:true},
+    { path: '/room-detail-admin/:id',component:RoomDetailAdmin,props:true  },
+    { path:'/admin/add-image/:id', component:  AddImage, props:true }
 ]
 
 const router = createRouter({

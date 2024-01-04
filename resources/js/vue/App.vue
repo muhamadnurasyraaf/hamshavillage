@@ -3,7 +3,7 @@
         <Navbar />
         <header :style="{ backgroundImage: 'url(/storage/backgrounds/bg1.jpg)'}">
             <div class="title-container">
-            <h1 class="title">Hamsha Village Homestay</h1>
+            <h1 class="title">Hamsha Village</h1>
             <p>Cozy Chalets &bull; Refreshing Morning Air &bull; Picturesque Rice Field Scenery</p>
             </div>
    </header>

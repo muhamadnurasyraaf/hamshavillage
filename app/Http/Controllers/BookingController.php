@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Payment;
+use Exception;
+use Carbon\Carbon;
 use App\Models\Room;
 use App\Models\Booking;
-use Carbon\Carbon;
+use App\Models\Payment;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use App\Models\ReceivingAccountBank;
 use Illuminate\Validation\ValidationException;
 
@@ -57,14 +59,11 @@ class BookingController extends Controller
             $breakfast = $validatedData['breakfast'];
             $extra_mat = $validatedData['extra_mat'];
 
-            $cost = ($room_price * $days) + ($breakfast * 10) + ($extra_mat * 20);
+            $cost = ($room_price + ($breakfast * 10) + ($extra_mat * 20)) * $days ;
             $validatedData['cost'] = $cost;
             $validatedData['days'] = $days;
             $booking = Booking::create($validatedData);
 
-
-
-            // Return a success response
             return response()->json([
                 'message' => 'Booking created successfully',
                 'data' => $booking,
@@ -118,16 +117,35 @@ class BookingController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update($id)
     {
-        //
+        try {
+            $booking = Booking::findOrFail($id);
+            $booking->isCompleted = 1;
+            $booking->save();
+
+            $room = $booking->room;
+            $room->isBooked = 0;
+            $room->save();
+
+            return response()->json(['message' => 'Successfully updated a bookingd']);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()]);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        try {
+            $booking = Booking::findOrFail($id);
+            $booking->delete();
+            return response()->json(['message' => 'Booking successfully deleted']);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()]);
+        }
+
     }
 }

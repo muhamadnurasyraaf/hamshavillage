@@ -1,10 +1,13 @@
 <template>
     <Navbar />
     <div class="add-room">
+        <div v-if="isSucceed" class="alert">
+            Successfully Added a Room
+        </div>
       <h2>Add a Room</h2>
       <form @submit.prevent="addRoom">
         <label for="name">Room Name:</label>
-        <input type="text" id="name" v-model="room.name" required />
+        <input type="text" id="name" v-model="room.room_name" required />
 
         <label for="description">Description:</label>
         <textarea id="description" v-model="room.description" required></textarea>
@@ -12,16 +15,7 @@
         <label for="price">Price:</label>
         <input type="number" id="price" v-model="room.price" required />
 
-        <label for="images">Images (up to 4):</label>
-        <input type="file" id="images" accept="image/*" @change="handleImageUpload" multiple />
-        <div v-if="room.images.length > 0">
-          <p>Uploaded Image Names:</p>
-          <ul>
-            <li v-for="(image, index) in room.images" :key="index">{{ image.name }}</li>
-          </ul>
-        </div>
-
-        <button type="submit">Add Room</button>
+        <button @click="handleSubmit" type="submit">Add Room</button>
       </form>
     </div>
     <Footer />
@@ -30,62 +24,46 @@
   <script>
   import Navbar from '../Navbar.vue';
   import Footer from '../Footer.vue';
+import axios from 'axios';
   export default {
     data() {
       return {
         room: {
-          name: '',
+          room_name: '',
           description: '',
           price: 0,
-          images: [] // Storing images as objects containing file data
-        }
+            image:null
+        },
+        isSucceed:false,
       };
+    },
+    props:{
+        id:String,
     },
     components: {
       Navbar,
       Footer
     },
     methods: {
-      addRoom() {
-        // Logic to handle adding the room with room details and images
-        console.log('Room Added:', this.room);
-        // Reset form fields after adding room (You might want to clear these fields in your actual application)
-        this.room = {
-          name: '',
-          description: '',
-          price: 0,
-          images: []
-        };
-      },
-      handleImageUpload(event) {
-        const files = event.target.files;
-        if (files.length + this.room.images.length > 4) {
-          alert('You can only upload up to 4 images.');
-          return;
-        }
+      handleSubmit() {
 
-        for (let i = 0; i < files.length; i++) {
-          if (this.room.images.length >= 4) break; // Limit to 4 images
-          const file = files[i];
-          const reader = new FileReader();
+            const formData = new FormData();
+            formData.append('name', this.room.room_name);
+            formData.append('description', this.room.description);
+            formData.append('price', this.room.price);
 
-          reader.onload = (e) => {
-            // Push image data including name into room.images array
-            this.room.images.push({
-              dataURL: e.target.result,
-              name: file.name // Store the name of the uploaded file
+            axios.post('/api/room/store', formData)
+            .then((response) => {
+            this.isSucceed = true;
+            console.log(response.data);
+            })
+            .catch((err) => {
+            console.error('Error submitting data', err);
             });
-          };
-          reader.readAsDataURL(file);
-        }
       }
     }
   };
   </script>
-
-  <style scoped>
-  /* Your existing styles */
-  </style>
 
   <style scoped>
   .add-room {
